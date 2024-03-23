@@ -1,12 +1,17 @@
 import BankFeatures from './BankFeatures';
-import Footer from './Footer';
+import Hero from './Hero';
 
 function Home() {
   return (
-    <div>
-      <BankFeatures />
-      <Footer />
-    </div>
+    <>
+      <Hero />
+      <section className="flex flex-col md:flex-row">
+        <h2 className="sr-only">Features</h2>
+        <BankFeatures type="chat" />
+        <BankFeatures type="money" />
+        <BankFeatures type="security" />
+      </section>
+    </>
   );
 }
 
