@@ -21,7 +21,7 @@ function Account() {
       <AccountContent
         title="Argent Bank Savings (x6712)"
         amount="$10,928.42"
-        description="Current Balance"
+        description="Available Balance"
       ></AccountContent>
       <AccountContent
         title="Argent Bank Credit Card (x8349)"
