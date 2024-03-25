@@ -1,13 +1,19 @@
+import { useGetUserDetailsQuery } from '../../services/authApi';
 import Button from '../../ui/Button';
 import AccountContent from './AccountContent';
 
 function Account() {
+  const { data: userDetails, isLoading, error } = useGetUserDetailsQuery();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
   return (
     <div className="mt-8">
       <h1 className="text-3xl font-bold text-white">
         Welcome back
         <br />
-        Tony Jarvis!
+        {userDetails?.name}
       </h1>
       <div className="m-auto mb-8 w-[150px]">
         <Button>Edit Name</Button>

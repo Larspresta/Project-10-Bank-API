@@ -1,18 +1,23 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { userLogin } from '../../services/authActions';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import authService from '../../services/authService';
 
-const userToken = localStorage.getItem('userToken')
-  ? localStorage.getItem('userToken')
-  : null;
-
-console.log(userToken);
+export const userLogin = createAsyncThunk(
+  'auth/login',
+  async (userData, thunkAPI) => {
+    try {
+      const data = await authService.login(userData);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  },
+);
 
 const initialState = {
   loading: false,
   userInfo: null,
-  userToken,
+  userToken: localStorage.getItem('userToken'),
   error: null,
-  success: false,
 };
 
 const authSlice = createSlice({
@@ -21,37 +26,31 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       localStorage.removeItem('userToken');
-      state.loading = false;
       state.userInfo = null;
       state.userToken = null;
-      state.error = null;
     },
-    setCredentials: (state, { payload }) => {
-      state.userInfo = payload;
+    setCredentials: (state, action) => {
+      state.userInfo = action.payload.userInfo;
+      state.userToken = action.payload.userToken;
     },
   },
-  builders: {
-    [userLogin.pending]: (state) => {
-      state.loading = true;
-      state.error = null;
-    },
-    [userLogin.fulfilled]: (state, { payload }) => {
-      state.loading = false;
-      state.userInfo = payload;
-      state.userToken = payload.userToken;
-    },
-    [userLogin.rejected]: (state, { payload }) => {
-      state.loading = false;
-      state.error = payload;
-    },
+  extraReducers: (builder) => {
+    builder
+      .addCase(userLogin.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(userLogin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userInfo = action.payload;
+        state.userToken = action.payload.token;
+        localStorage.setItem('userToken', action.payload.token);
+      })
+      .addCase(userLogin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
+export const { logout, setCredentials } = authSlice.actions;
 export default authSlice.reducer;
-
-// export const { setCredentials, logOut } = authSlice.actions;
-
-// export default authSlice.reducer;
-
-// export const getCurrentUser = (state) => state.auth.user;
-// export const getCurrentToken = (state) => state.auth.token;

@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 // import Button from '../../ui/Button';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { userLogin } from '../../services/authActions';
+import { userLogin } from '../../features/auth/authSlice';
 import Error from '../../ui/Error';
 
 function Login() {
@@ -21,7 +21,8 @@ function Login() {
   }, [navigate, userInfo]);
 
   const submitForm = (data) => {
-    dispatch(userLogin(data));
+    console.log(data);
+    dispatch(userLogin({ email: data.email, password: data.password }));
   };
 
   return (
@@ -42,8 +43,8 @@ function Login() {
             <input
               className="border-1 border border-black px-4 py-1"
               type="email"
-              name="username"
-              id="username"
+              name="email"
+              id="email"
               {...register('email')}
               required
             />
@@ -59,7 +60,7 @@ function Login() {
               type="password"
               name="password"
               id="password"
-              {...register('email')}
+              {...register('password')}
               required
             />
           </div>
@@ -70,7 +71,12 @@ function Login() {
         </div>
         <div>
           {/* <Button>Sign in</Button> */}
-          <button type="submit">{loading ? 'loading' : 'Login'}</button>
+          <button
+            className="focus:bg-gren-400 my-5 mb-0 inline-block w-full bg-green-600 px-4 py-3  text-sm font-semibold uppercase tracking-wide text-white underline transition-colors duration-300 hover:bg-green-500 focus:outline-none"
+            type="submit"
+          >
+            {loading ? 'loading' : 'Login'}
+          </button>
         </div>
       </form>
     </div>
