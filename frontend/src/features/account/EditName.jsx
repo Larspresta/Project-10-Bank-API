@@ -1,48 +1,70 @@
 import { useState } from 'react';
-import { useUsernameMutation } from '../../services/authUserApi';
+import { useUsernameMutation } from '../../services/authUserApi'; // Adjust the import path as necessary
+import { useDispatch, useSelector } from 'react-redux';
+import { getUsername, updateProfile, getToken } from '../auth/authSlice';
 import Button from '../../ui/Button';
-import { useSelector } from 'react-redux';
 
-function EditName() {
-  const [firstName, setFirstName] = useState();
-  const [lastName, setLastName] = useState();
-  const getToken = useSelector((state) => state.auth.token);
-  const { firstName: curFirstName, lastName: curLastName } = useSelector(
-    (state) => state.auth.user || {},
-  );
-
+function EditName({ onCancel }) {
+  const dispatch = useDispatch();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [updateUsername, { isLoading, isSuccess, isError, error }] =
     useUsernameMutation();
 
-  async function handleSubmit(e) {
+  const token = useSelector(getToken);
+
+  const getUser = useSelector(getUsername);
+  const { firstName: curFirstName, lastName: curLastName } = getUser;
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = getToken;
+
     const user = { firstName, lastName };
 
     try {
-      await updateUsername({ user, token }).unwrap();
+      const response = await updateUsername({ user, token }).unwrap();
+      dispatch(updateProfile({ user: response.body }));
     } catch (err) {
-      console.error(err);
+      console.error();
     }
-  }
+  };
 
   return (
-    <div>
+    <div className=" m-auto mb-8 mt-12 flex w-[300px] flex-1 flex-col items-center gap-3 bg-white">
+      <h3>Change your name</h3>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          placeholder={curFirstName}
-        />
-        <input
-          type="text"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          placeholder={curLastName}
-        />
-        {/* Using the custom Button component */}
-        <Button disabled={isLoading}>Update Name</Button>
+        <div>
+          <label className="text-base font-bold" htmlFor="username">
+            first name
+          </label>
+          <input
+            className="border-1 border border-black px-4 py-1"
+            type="text"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder={curFirstName}
+          />
+        </div>
+        <div>
+          <label className="text-base font-bold" htmlFor="username">
+            last name
+          </label>
+          <input
+            className="border-1 border border-black px-4 py-1"
+            type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            placeholder={curLastName}
+          />
+        </div>
+        <div className="m-auto w-4/5">
+          <Button type="submit" disabled={isLoading}>
+            Update Name
+          </Button>
+          <Button type="button" onClick={onCancel} disabled={isLoading}>
+            cancel
+          </Button>
+        </div>
       </form>
       {isSuccess && <p>Name updated successfully!</p>}
       {isError && (
@@ -53,5 +75,4 @@ function EditName() {
     </div>
   );
 }
-
 export default EditName;

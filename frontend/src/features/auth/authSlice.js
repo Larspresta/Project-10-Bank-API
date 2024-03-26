@@ -9,7 +9,7 @@ export const authSlice = createSlice({
   reducers: {
     setToken: (state, action) => {
       state.token = action.payload.token;
-      console.log('Token is set', state.token);
+      console.log('Token:', state.token);
     },
     login: (state, action) => {
       state.user = action.payload.user;
@@ -25,3 +25,6 @@ export const authSlice = createSlice({
 });
 
 export const { login, setToken, logout, updateProfile } = authSlice.actions;
+
+export const getToken = (state) => state.auth.token;
+export const getUsername = (state) => state.auth.user;

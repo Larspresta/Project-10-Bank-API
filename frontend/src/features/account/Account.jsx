@@ -17,6 +17,8 @@ function Account() {
     skip: !token,
   });
 
+  console.log(data);
+
   const [showEditForm, setShowEditForm] = useState(false);
 
   function handleShowEdit() {
@@ -28,6 +30,7 @@ function Account() {
       navigate('/login');
     }
   }, [token, navigate]);
+
   useEffect(() => {
     if (data) {
       dispatch(login({ user: data.body }));
@@ -40,15 +43,20 @@ function Account() {
 
   return (
     <div className="mt-8">
-      <h1 className="text-3xl font-bold text-white">
+      <h1 className="m-auto text-3xl font-bold text-white">
         Welcome back
         <br />
         {user?.firstName} {user?.lastName}
       </h1>
-      <div className="m-auto mb-8 w-[150px]">
-        <Button onClick={handleShowEdit}>Edit Name</Button>
-      </div>
-      {showEditForm && <EditName />}
+
+      {!showEditForm ? (
+        <div className="m-auto mb-8 w-[150px]">
+          <Button onClick={handleShowEdit}>Edit Name</Button>
+        </div>
+      ) : (
+        <EditName onCancel={handleShowEdit} />
+      )}
+
       <h2 className="sr-only">Accounts</h2>
       <AccountContent
         title="Argent Bank Checking (x8349)"

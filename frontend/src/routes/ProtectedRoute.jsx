@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+/* import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem('userToken');
@@ -6,3 +6,4 @@ const ProtectedRoute = ({ children }) => {
 };
 
 export default ProtectedRoute;
+ */

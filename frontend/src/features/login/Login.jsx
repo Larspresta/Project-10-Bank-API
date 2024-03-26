@@ -45,7 +45,7 @@ export function SignInForm() {
       <h3 className="text-2xl font-bold">sign in</h3>
       <form onSubmit={handleSubmit}>
         <div className="mb-4 text-left ">
-          <label className="text-base font-bold" htmlFor="username">
+          <label className="text-base font-bold" htmlFor="email">
             Username
           </label>
           <div>
