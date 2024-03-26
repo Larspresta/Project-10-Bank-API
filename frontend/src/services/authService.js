@@ -1,16 +1,17 @@
-import axios from 'axios';
+/* import axios from 'axios';
 
-const API_URL = 'http://localhost:3001/api/v1';
+const API_URL = 'http://localhost:3001/api/v1/user/login/';
 
 const login = async (userData) => {
-  const response = await axios.post(`${API_URL}/user/login`, userData);
+  const response = await axios.post(API_URL, userData);
   if (response.data) {
-    localStorage.setItem('userToken', response.data.token);
+    localStorage.setItem('token', response.data.token);
+    return response.data;
   }
-  return response.data;
 };
 
-export default {
-  login,
-  //    ADD Logout later
+const logout = () => {
+  localStorage.removeItem('token');
 };
+
+export default { login, logout }; */

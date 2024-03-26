@@ -1,28 +1,38 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-// import Button from '../../ui/Button';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { userLogin } from '../../features/auth/authSlice';
-import Error from '../../ui/Error';
+import { useLoginMutation } from '../../services/authUserApi';
+import { setToken } from '../../features/auth/authSlice';
 
-function Login() {
-  const { loading, userInfo, error } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
-
-  const { register, handleSubmit } = useForm();
-
+export function SignInForm() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [login, { isLoading, error }] = useLoginMutation();
 
-  useEffect(() => {
-    if (userInfo) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleEmailChange = (e) => setEmail(e.target.value);
+  const handlePasswordChange = (e) => setPassword(e.target.value);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const tryUserLogin = {
+      email: email,
+      password: password,
+    };
+    try {
+      const response = await login(tryUserLogin).unwrap();
+      const token = response.body.token;
+      dispatch(
+        setToken({
+          token,
+        }),
+      );
       navigate('/profile');
+    } catch (err) {
+      console.error(error);
     }
-  }, [navigate, userInfo]);
-
-  const submitForm = (data) => {
-    console.log(data);
-    dispatch(userLogin({ email: data.email, password: data.password }));
   };
 
   return (
@@ -33,8 +43,7 @@ function Login() {
         alt="login"
       />
       <h3 className="text-2xl font-bold">sign in</h3>
-      <form onSubmit={handleSubmit(submitForm)}>
-        {error && <Error>{error}</Error>}
+      <form onSubmit={handleSubmit}>
         <div className="mb-4 text-left ">
           <label className="text-base font-bold" htmlFor="username">
             Username
@@ -45,7 +54,7 @@ function Login() {
               type="email"
               name="email"
               id="email"
-              {...register('email')}
+              onChange={handleEmailChange}
               required
             />
           </div>
@@ -60,9 +69,12 @@ function Login() {
               type="password"
               name="password"
               id="password"
-              {...register('password')}
+              onChange={handlePasswordChange}
               required
             />
+            {error && (
+              <p className="mt-2 text-sm text-red-600">{error.data.message}</p>
+            )}
           </div>
         </div>
         <div className="flex space-x-2">
@@ -75,7 +87,7 @@ function Login() {
             className="focus:bg-gren-400 my-5 mb-0 inline-block w-full bg-green-600 px-4 py-3  text-sm font-semibold uppercase tracking-wide text-white underline transition-colors duration-300 hover:bg-green-500 focus:outline-none"
             type="submit"
           >
-            {loading ? 'loading' : 'Login'}
+            {isLoading ? 'Loading...' : 'Sign In'}
           </button>
         </div>
       </form>
@@ -83,4 +95,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default SignInForm;

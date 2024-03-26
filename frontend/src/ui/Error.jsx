@@ -1,7 +1,9 @@
-import { useRouteError } from 'react-router-dom';
+import { useRouteError, useLocation } from 'react-router-dom';
 
 function Error() {
-  const error = useRouteError();
+  const routeError = useRouteError();
+  const location = useLocation();
+  const error = routeError || location.state.error;
   console.log(error);
 
   return (

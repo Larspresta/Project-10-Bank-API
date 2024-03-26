@@ -1,18 +1,11 @@
 import { Link, NavLink } from 'react-router-dom';
-import { useEffect } from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
-import { useGetUserDetailsQuery } from '../services/authApi';
 import { logout } from '../features/auth/authSlice';
 
 function Header() {
-  const { userInfo } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-
-  const { data, isFetching } = useGetUserDetailsQuery(undefined, {
-    skip: !userInfo?.userToken,
-  });
-
-  useEffect(() => {}, [data, dispatch]);
+  const user = useSelector((state) => state.auth.user);
 
   return (
     <div className="flex items-center justify-between">
@@ -29,15 +22,8 @@ function Header() {
           src="./public/assets/img/login-icon.svg"
           alt="login"
         />
-        <span>
-          {isFetching
-            ? `Fetching your profile...`
-            : userInfo
-              ? `Logged in as ${userInfo.email}`
-              : "You're not logged in"}
-        </span>
-        <div className="cta">
-          {userInfo ? (
+        <div className="cta ">
+          {user ? (
             <button className="button" onClick={() => dispatch(logout())}>
               Logout
             </button>

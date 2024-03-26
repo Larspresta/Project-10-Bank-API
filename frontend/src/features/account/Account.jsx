@@ -1,23 +1,54 @@
-import { useGetUserDetailsQuery } from '../../services/authApi';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useProfileQuery } from '../../services/authUserApi';
 import Button from '../../ui/Button';
 import AccountContent from './AccountContent';
+import { useSelector, useDispatch } from 'react-redux';
+import { login } from '../auth/authSlice';
+import EditName from './EditName';
 
 function Account() {
-  const { data: userDetails, isLoading, error } = useGetUserDetailsQuery();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.auth.token);
+  const user = useSelector((state) => state.auth.user);
+  console.log(user);
+  const { data, error } = useProfileQuery(token, {
+    skip: !token,
+  });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  const [showEditForm, setShowEditForm] = useState(false);
+
+  function handleShowEdit() {
+    setShowEditForm(!showEditForm);
+  }
+
+  useEffect(() => {
+    if (!token) {
+      navigate('/login');
+    }
+  }, [token, navigate]);
+  useEffect(() => {
+    if (data) {
+      dispatch(login({ user: data.body }));
+    }
+    if (error) {
+      console.error('Error fetching user:', error);
+      navigate('/login');
+    }
+  }, [data, error, dispatch, navigate]);
 
   return (
     <div className="mt-8">
       <h1 className="text-3xl font-bold text-white">
         Welcome back
         <br />
-        {userDetails?.name}
+        {user?.firstName} {user?.lastName}
       </h1>
       <div className="m-auto mb-8 w-[150px]">
-        <Button>Edit Name</Button>
+        <Button onClick={handleShowEdit}>Edit Name</Button>
       </div>
+      {showEditForm && <EditName />}
       <h2 className="sr-only">Accounts</h2>
       <AccountContent
         title="Argent Bank Checking (x8349)"
