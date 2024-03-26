@@ -4,7 +4,7 @@ import Login from './features/login/Login';
 import Account from './features/account/Account';
 import Applayout from './ui/Applayout';
 import './index.css';
-// import ProtectedRoute from './routes/ProtectedRoute';
+import ProtectedRoute from './routes/ProtectedRoute';
 
 const router = createBrowserRouter([
   {
@@ -14,7 +14,11 @@ const router = createBrowserRouter([
       { path: '/login', element: <Login /> },
       {
         path: '/profile',
-        element: <Account />,
+        element: (
+          <ProtectedRoute>
+            <Account />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

@@ -58,11 +58,11 @@ function EditName({ onCancel }) {
           />
         </div>
         <div className="m-auto w-4/5">
-          <Button type="submit" disabled={isLoading}>
+          <Button type="account" disabled={isLoading}>
             Update Name
           </Button>
-          <Button type="button" onClick={onCancel} disabled={isLoading}>
-            cancel
+          <Button type="account" onClick={onCancel} disabled={isLoading}>
+            close
           </Button>
         </div>
       </form>

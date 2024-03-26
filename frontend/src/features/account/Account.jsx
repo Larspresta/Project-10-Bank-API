@@ -51,7 +51,9 @@ function Account() {
 
       {!showEditForm ? (
         <div className="m-auto mb-8 w-[150px]">
-          <Button onClick={handleShowEdit}>Edit Name</Button>
+          <Button type="account" onClick={handleShowEdit}>
+            Edit Name
+          </Button>
         </div>
       ) : (
         <EditName onCancel={handleShowEdit} />

@@ -1,11 +1,11 @@
 import { Link, NavLink } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../features/auth/authSlice';
+import { getUsername, logout } from '../features/auth/authSlice';
 
 function Header() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
+  const { firstName } = useSelector(getUsername) || {};
 
   return (
     <div className="flex items-center justify-between">
@@ -16,23 +16,29 @@ function Header() {
           alt="Argent Bank"
         />
       </Link>
-      <div className="px flex gap-2 px-4">
-        <img
-          className="size-6"
-          src="./public/assets/img/login-icon.svg"
-          alt="login"
-        />
-        <div className="cta ">
-          {user ? (
-            <button className="button" onClick={() => dispatch(logout())}>
-              Logout
-            </button>
-          ) : (
-            <NavLink className="button" to="/login">
+      <div className=" flex gap-2 px-4">
+        {firstName ? (
+          <div className=" flex gap-2 px-4">
+            <p>{firstName}</p>
+            <img
+              className="size-6"
+              src="./public/assets/img/logout-icon.svg"
+              alt="login"
+            />
+            <button onClick={() => dispatch(logout())}>Logout</button>
+          </div>
+        ) : (
+          <>
+            <NavLink className=" button flex gap-2 px-4" to="/login">
+              <img
+                className="size-6"
+                src="./public/assets/img/login-icon.svg"
+                alt="login"
+              />
               Login
             </NavLink>
-          )}
-        </div>
+          </>
+        )}
       </div>
     </div>
   );
